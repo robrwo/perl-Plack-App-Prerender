@@ -73,7 +73,7 @@ request is a Plack response and simply returns it.
 
 This can be used for simple request validation.  For example,
 
-  use Robots::Validate 'v0.2.0';
+  use Robots::Validate v0.2.0;
 
   sub validator {
     my ($path, $env) = @_;
