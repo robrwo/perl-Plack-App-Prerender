@@ -16,7 +16,7 @@ use HTTP::Request;
 use HTTP::Status qw/ :constants /;
 use Plack::Request;
 use Plack::Util;
-use Plack::Util::Accessor qw/ mech base cache max_age request response /;
+use Plack::Util::Accessor qw/ mech rewrite cache max_age request response /;
 use Ref::Util qw/ is_coderef is_plain_arrayref /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
@@ -39,8 +39,8 @@ use WWW::Mechanize::Chrome;
   Log::Log4perl->easy_init($ERROR);
 
   my $app = Plack::App::Prerender->new(
-      base  => "http://www.example.com",
-      cache => $cache,
+      rewrite => "http://www.example.com",
+      cache   => $cache,
   )->to_app;
 
 =head1 DESCRIPTION
@@ -59,10 +59,11 @@ Chrome will be launched.
 If you want to specify alternative options, you chould create your own
 instance of WWW::Mechanize::Chrome and pass it to the constructor.
 
-=attr base
+=attr rewrite
 
 This can either be a base URL prefix string, or a code reference that
-takes the PSGI C<REQUEST_URI> and environment hash as arguments.
+takes the PSGI C<REQUEST_URI> and environment hash as arguments, and
+returns a full URL to pass to L</mech>.
 
 If the code reference returns C<undef>, then the request will abort
 with an HTTP 400.
@@ -179,7 +180,7 @@ sub call {
 
     my $path_query = $env->{REQUEST_URI};
 
-    my $base = $self->base;
+    my $base = $self->rewrite;
     my $url  = is_coderef($base)
         ? $base->($path_query, $env)
         : $base . $path_query;
