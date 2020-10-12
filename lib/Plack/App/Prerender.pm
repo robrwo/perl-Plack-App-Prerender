@@ -11,7 +11,7 @@ use HTTP::Headers;
 use HTTP::Request;
 use HTTP::Status qw/ :constants /;
 use Plack::Util;
-use Plack::Util::Accessor qw/ mech base cache max_age headers /;
+use Plack::Util::Accessor qw/ mech base cache max_age response /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
 
@@ -33,8 +33,8 @@ sub prepare_app {
 
     }
 
-    unless ($self->headers) {
-        $self->headers(
+    unless ($self->response) {
+        $self->response(
             [
              qw/
              Content-Encoding
@@ -82,7 +82,7 @@ sub call {
 
         my $head = $res->headers;
         my $h = Plack::Util::headers([ 'X-Renderer' => __PACKAGE__ ]);
-        for my $field (@{ $self->headers }) {
+        for my $field (@{ $self->response }) {
             my $value = $head->header($field) // next;
             $value =~ tr/\n/ /;
             $h->set( $field => $value );
