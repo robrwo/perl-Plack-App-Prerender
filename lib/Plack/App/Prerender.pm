@@ -17,7 +17,7 @@ use HTTP::Status qw/ :constants /;
 use Plack::Request;
 use Plack::Util;
 use Plack::Util::Accessor qw/ mech base cache max_age request response /;
-use Ref::Util qw/ is_coderef /;
+use Ref::Util qw/ is_coderef is_plain_arrayref /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
 
@@ -61,8 +61,31 @@ instance of WWW::Mechanize::Chrome and pass it to the constructor.
 
 =attr base
 
-This can either be a base URL prefix string, or a code reference for a
-function to return a URL string from the PSGI C<REQUEST_URI>.
+This can either be a base URL prefix string, or a code reference that
+takes the PSGI C<REQUEST_URI> and environment hash as arguments.
+
+If the code reference returns C<undef>, then the request will abort
+with an HTTP 400.
+
+If the code reference returns an array reference, then it assumes the
+request is a Plack response and simply returns it.
+
+This can be used for simple request validation.  For example,
+
+  use Robots::Validate;
+
+  sub validator {
+    my ($path, $env) = @_;
+
+    state $rv = Robots::Validate->new();
+
+    unless ( $rv->validate(
+      $env->{REMOTE_ADDR}, { agent => $env->{USER_AGENT} } )) {
+        return [ 403, [], [] ];
+    }
+
+    ...
+  }
 
 =attr cache
 
@@ -156,6 +179,14 @@ sub call {
 
     my $path_query = $env->{REQUEST_URI};
 
+    my $base = $self->base;
+    my $url  = is_coderef($base)
+        ? $base->($path_query, $env)
+        : $base . $path_query;
+
+    $url //= [ HTTP_BAD_REQUEST, [], [] ];
+    return $url if (is_plain_arrayref($url));
+
     my $cache = $self->cache;
     my $data  = $cache->get($path_query);
     if (defined $data) {
@@ -173,11 +204,6 @@ sub call {
             my $value = $req_head->header($field) // next;
             $mech->add_header( $field => $value );
         }
-
-        my $base = $self->base;
-        my $url  = is_coderef($base)
-            ? $base->($path_query)
-            : $base . $path_query;
 
         my $res  = $mech->get( $url );
         my $body = encode("UTF-8", $mech->content);
