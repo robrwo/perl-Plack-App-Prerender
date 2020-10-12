@@ -99,7 +99,6 @@ sub prepare_app {
         my $mech = WWW::Mechanize::Chrome->new(
             headless         => 1,
             separate_session => 1,
-            launch_arg => [qw/ --start-maximized /],
         );
 
         $self->mech($mech);
