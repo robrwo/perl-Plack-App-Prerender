@@ -81,6 +81,9 @@ This can be used for simple request validation.  For example,
     state $rv = Robots::Validate->new();
 
     unless ( $rv->validate( $env ) ) {
+        if (my $logger = $env->{'psgix.logger'}) {
+           $logger->( { level => 'warn', message => 'not a bot!' } );
+        }
         return [ 403, [], [] ];
     }
 
