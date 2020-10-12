@@ -16,7 +16,7 @@ use HTTP::Request;
 use HTTP::Status qw/ :constants /;
 use Plack::Request;
 use Plack::Util;
-use Plack::Util::Accessor qw/ mech rewrite cache max_age request response /;
+use Plack::Util::Accessor qw/ mech rewrite cache max_age request response wait /;
 use Ref::Util qw/ is_coderef is_plain_arrayref /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
@@ -109,6 +109,10 @@ proxy.
 
 This is an array reference of response headers to pass from the
 result.
+
+=attr wait
+
+The number of seconds to wait for new content to be loaded.
 
 =head1 LIMITATIONS
 
@@ -204,6 +208,13 @@ sub call {
         }
 
         my $res  = $mech->get( $url );
+
+        if (my $count = $self->wait) {
+            while ($mech->infinite_scroll(1)) {
+                last if $count-- < 0;
+            }
+        }
+
         my $body = encode("UTF-8", $mech->content);
 
         my $head = $res->headers;
