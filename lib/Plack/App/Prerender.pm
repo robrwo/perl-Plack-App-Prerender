@@ -56,6 +56,9 @@ search engines that do not support AJAX-generated content.
 A L<WWW::Mechanize::Chrome> object. If omitted, a headless instance of
 Chrome will be launched.
 
+If you want to specify alternative options, you chould create your own
+instance of WWW::Mechanize::Chrome and pass it to the constructor.
+
 =attr base
 
 This can either be a base URL prefix string, or a code reference for a
