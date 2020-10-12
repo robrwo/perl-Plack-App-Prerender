@@ -73,15 +73,14 @@ request is a Plack response and simply returns it.
 
 This can be used for simple request validation.  For example,
 
-  use Robots::Validate;
+  use Robots::Validate 'v0.2.0';
 
   sub validator {
     my ($path, $env) = @_;
 
     state $rv = Robots::Validate->new();
 
-    unless ( $rv->validate(
-      $env->{REMOTE_ADDR}, { agent => $env->{USER_AGENT} } )) {
+    unless ( $rv->validate( $env ) ) {
         return [ 403, [], [] ];
     }
 
