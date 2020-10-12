@@ -10,8 +10,9 @@ use Encode qw/ encode /;
 use HTTP::Headers;
 use HTTP::Request;
 use HTTP::Status qw/ :constants /;
+use Plack::Request;
 use Plack::Util;
-use Plack::Util::Accessor qw/ mech base cache max_age response /;
+use Plack::Util::Accessor qw/ mech base cache max_age request response /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
 
@@ -31,6 +32,20 @@ sub prepare_app {
 
         $self->mech($mech);
 
+    }
+
+    unless ($self->request) {
+        $self->request(
+            [
+             qw/
+             User-Agent
+             X-Forwarded-For
+             X-Forwarded-Host
+             X-Forwarded-Port
+             X-Forwarded-Proto
+             /
+            ]
+        );
     }
 
     unless ($self->response) {
@@ -53,7 +68,9 @@ sub prepare_app {
 sub call {
     my ($self, $env) = @_;
 
-    my $method = $env->{REQUEST_METHOD} // '';
+    my $req = Plack::Request->new($env);
+
+    my $method = $req->method // '';
     unless ($method eq "GET") {
         return [ HTTP_METHOD_NOT_ALLOWED ];
     }
@@ -72,7 +89,11 @@ sub call {
         my $mech = $self->mech;
         $mech->reset_headers;
 
-        # TODO pass through some request headers
+        my $req_head = $req->headers;
+        for my $field (@{ $self->request }) {
+            my $value = $req_head->header($field) // next;
+            $mech->add_header( $field => $value );
+        }
 
         my $res  = $mech->get( $self->base . $path_query );
         my $body = encode("UTF-8", $mech->content);
