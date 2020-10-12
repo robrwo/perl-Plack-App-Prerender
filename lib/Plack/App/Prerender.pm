@@ -85,6 +85,10 @@ result.
 
 This does not support cache invalidation or screenshot rendering.
 
+This only does the bare minimum necessary for proxying requests. You
+may need additional middleware for reverse proxies, logging, or
+security filtering.
+
 =cut
 
 sub prepare_app {
