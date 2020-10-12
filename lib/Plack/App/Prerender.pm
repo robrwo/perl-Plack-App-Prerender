@@ -17,11 +17,13 @@ use HTTP::Status qw/ :constants /;
 use Plack::Request;
 use Plack::Util;
 use Plack::Util::Accessor qw/ mech base cache max_age request response /;
+use Ref::Util qw/ is_coderef /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
 
 # RECOMMEND PREREQ: CHI
 # RECOMMEND PREREQ: Log::Log4perl
+# RECOMMEND PREREQ: Ref::Util::XS
 
 =head1 SYNOPSIS
 
@@ -56,7 +58,8 @@ Chrome will be launched.
 
 =attr base
 
-This is the base URL prefix.
+This can either be a base URL prefix string, or a code reference for a
+function to return a URL string from the PSGI C<REQUEST_URI>.
 
 =attr cache
 
@@ -165,7 +168,12 @@ sub call {
             $mech->add_header( $field => $value );
         }
 
-        my $res  = $mech->get( $self->base . $path_query );
+        my $base = $self->base;
+        my $url  = is_coderef($base)
+            ? $base->($path_query)
+            : $base . $path_query;
+
+        my $res  = $mech->get( $url );
         my $body = encode("UTF-8", $mech->content);
 
         my $head = $res->headers;
