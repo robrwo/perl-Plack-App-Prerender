@@ -6,6 +6,8 @@ use v5.10;
 use strict;
 use warnings;
 
+our $VERSION = 'v0.1.0';
+
 use parent qw/ Plack::Component /;
 
 use Encode qw/ encode /;
