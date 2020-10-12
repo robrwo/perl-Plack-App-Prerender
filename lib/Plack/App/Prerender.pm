@@ -132,11 +132,6 @@ sub prepare_app {
 
         $self->mech($mech);
 
-        $SIG{INT} = sub {
-            $self->DESTROY;
-            exit(1);
-        };
-
     }
 
     unless ($self->request) {
@@ -240,13 +235,6 @@ sub call {
         }
     }
 
-}
-
-sub DESTROY {
-    my $self = shift;
-    return if ${^GLOBAL_PHASE} eq 'DESTRUCT';
-
-    $self->mech->close if $self->mech;
 }
 
 =head1 SEE ALSO
