@@ -174,7 +174,7 @@ sub call {
 
     my $method = $req->method // '';
     unless ($method eq "GET") {
-        return [ HTTP_METHOD_NOT_ALLOWED ];
+        return [ HTTP_METHOD_NOT_ALLOWED, [], [] ];
     }
 
     my $path_query = $env->{REQUEST_URI};
