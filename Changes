@@ -1,6 +1,8 @@
 Revision history for {{ $dist->name }}:
 
 {{$NEXT}}
+
+v0.1.1    2020-10-12 22:53:31+01:00 Europe/London
   [Toolchain]
   - Fixed dist.ini configuration.
 
