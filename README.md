@@ -4,7 +4,7 @@ Plack::App::Prerender - a simple prerendering proxy for Plack
 
 # VERSION
 
-version v0.1.1
+version v0.1.2
 
 # SYNOPSIS
 
