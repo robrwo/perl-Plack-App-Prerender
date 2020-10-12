@@ -10,16 +10,15 @@ use Encode qw/ encode /;
 use HTTP::Headers;
 use HTTP::Request;
 use HTTP::Status qw/ :constants /;
-use Log::Log4perl qw/ :easy /;
 use Plack::Util;
 use Plack::Util::Accessor qw/ mech base cache max_age headers /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
 
+# RECOMMEND PREREQ: Log::Log4perl
+
 sub prepare_app {
     my ($self) = @_;
-
-    Log::Log4perl->easy_init($ERROR);
 
     unless ($self->mech) {
 
