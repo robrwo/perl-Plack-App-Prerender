@@ -61,7 +61,6 @@ sub call {
     my $path_query = $env->{REQUEST_URI};
 
     my $cache = $self->cache;
-
     my $data  = $cache->get($path_query);
     if (defined $data) {
 
