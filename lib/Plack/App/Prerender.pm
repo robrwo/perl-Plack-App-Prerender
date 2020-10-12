@@ -2,7 +2,7 @@ package Plack::App::Prerender;
 
 # ABSTRACT: a simple prerendering proxy for Plack
 
-use v5.10;
+use v5.10.1;
 use strict;
 use warnings;
 
