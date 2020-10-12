@@ -41,6 +41,7 @@ use WWW::Mechanize::Chrome;
   my $app = Plack::App::Prerender->new(
       rewrite => "http://www.example.com",
       cache   => $cache,
+      wait    => 10,
   )->to_app;
 
 =head1 DESCRIPTION
