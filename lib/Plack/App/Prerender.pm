@@ -37,8 +37,6 @@ sub prepare_app {
         $self->response(
             [
              qw/
-             Content-Encoding
-             Content-Length
              Content-Type
              Expires
              Last-Modified
