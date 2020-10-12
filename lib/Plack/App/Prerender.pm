@@ -15,6 +15,7 @@ use Plack::Util::Accessor qw/ mech base cache max_age headers /;
 use Time::Seconds qw/ ONE_HOUR /;
 use WWW::Mechanize::Chrome;
 
+# RECOMMEND PREREQ: CHI
 # RECOMMEND PREREQ: Log::Log4perl
 
 sub prepare_app {
