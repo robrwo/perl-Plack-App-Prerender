@@ -4,6 +4,9 @@ Revision history for {{ $dist->name }}:
   [Bug Fixes]
   - The User-Agent header is forwarded as X-Forwarded-User-Agent, GH#1.
 
+  - Use the minimum of Cache-Control max-age and the configured max_age
+    when caching pages, GH#2.
+
 v0.1.1    2020-10-12 22:53:31+01:00 Europe/London
   [Toolchain]
   - Fixed dist.ini configuration.

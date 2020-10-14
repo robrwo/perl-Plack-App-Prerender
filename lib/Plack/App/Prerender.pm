@@ -233,6 +233,9 @@ sub call {
             my $age;
             if (my $value = $head->header("Cache-Control")) {
                 ($age) = $value =~ /(?:s\-)?max-age=([0-9]+)\b/;
+                if ($age && $age > $self->max_age) {
+                    $age = $self->max_age;
+                }
             }
 
             $data = [ HTTP_OK, $h->headers, [$body] ];
