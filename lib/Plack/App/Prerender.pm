@@ -104,12 +104,36 @@ used instead.
 =attr request
 
 This is an array reference of request headers to pass through the
-proxy.
+proxy.  These default to the reverse proxy forwarding headers:
+
+=over
+
+=item C<X-Forwarded-For>
+
+=item C<X-Forwarded-Host>
+
+=item C<X-Forwarded-Port>
+
+=item C<X-Forwarded-Proto>
+
+=back
+
+The C<User-Agent> is forwarded as C<X-Forwarded-User-Agent>.
 
 =attr response
 
 This is an array reference of response headers to pass from the
-result.
+result.  It defaults to the following headers:
+
+=over
+
+=item C<Content-Type>
+
+=item C<Expires>
+
+=item C<Last-Modified>
+
+=back
 
 =attr wait
 

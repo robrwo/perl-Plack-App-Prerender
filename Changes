@@ -7,6 +7,10 @@ Revision history for {{ $dist->name }}:
   - Use the minimum of Cache-Control max-age and the configured max_age
     when caching pages, GH#2.
 
+  [Documentation]
+  - Documented the forwarded headers for the request and response
+    attributes.
+
 v0.1.1    2020-10-12 22:53:31+01:00 Europe/London
   [Toolchain]
   - Fixed dist.ini configuration.

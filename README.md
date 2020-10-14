@@ -91,12 +91,23 @@ used instead.
 ## request
 
 This is an array reference of request headers to pass through the
-proxy.
+proxy.  These default to the reverse proxy forwarding headers:
+
+- `X-Forwarded-For`
+- `X-Forwarded-Host`
+- `X-Forwarded-Port`
+- `X-Forwarded-Proto`
+
+The `User-Agent` is forwarded as `X-Forwarded-User-Agent`.
 
 ## response
 
 This is an array reference of response headers to pass from the
-result.
+result.  It defaults to the following headers:
+
+- `Content-Type`
+- `Expires`
+- `Last-Modified`
 
 ## wait
 
