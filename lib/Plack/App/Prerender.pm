@@ -143,7 +143,6 @@ sub prepare_app {
         $self->request(
             [
              qw/
-             User-Agent
              X-Forwarded-For
              X-Forwarded-Host
              X-Forwarded-Port
@@ -206,6 +205,9 @@ sub call {
         for my $field (@{ $self->request }) {
             my $value = $req_head->header($field) // next;
             $mech->add_header( $field => $value );
+        }
+        if (my $ua = $req_head->header('User-Agent')) {
+            $mech->add_header( 'X-Forwarded-User-Agent' => $ua );
         }
 
         my $res  = $mech->get( $url );
