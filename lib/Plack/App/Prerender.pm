@@ -95,6 +95,8 @@ This can be used for simple request validation.  For example,
 
 This is the cache handling interface. See L<CHI>.
 
+If no cache is specified (v0.2.0), then the result will not be cached.
+
 =attr max_age
 
 This is the maximum time (in seconds) to cache content.  If the page
@@ -242,7 +244,7 @@ sub call {
     return $url if (is_plain_arrayref($url));
 
     my $cache = $self->cache;
-    my $data  = $cache->get($path_query);
+    my $data  = $cache ? $cache->get($path_query) : undef;
     if (defined $data) {
 
         return $data;
@@ -283,17 +285,19 @@ sub call {
 
         if ($res->code == HTTP_OK) {
 
-            my $age;
-            if (my $value = $head->header("Cache-Control")) {
-                ($age) = $value =~ /(?:s\-)?max-age=([0-9]+)\b/;
-                if ($age && $age > $self->max_age) {
-                    $age = $self->max_age;
-                }
-            }
-
             $data = [ HTTP_OK, $h->headers, [$body] ];
 
-            $cache->set( $path_query, $data, $age // $self->max_age );
+            if ($cache) {
+                my $age;
+                if (my $value = $head->header("Cache-Control")) {
+                    ($age) = $value =~ /(?:s\-)?max-age=([0-9]+)\b/;
+                    if ($age && $age > $self->max_age) {
+                        $age = $self->max_age;
+                    }
+                }
+
+                $cache->set( $path_query, $data, $age // $self->max_age );
+            }
 
             return $data;
 
