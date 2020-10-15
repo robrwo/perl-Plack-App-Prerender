@@ -103,8 +103,17 @@ used instead.
 
 =attr request
 
-This is an array reference of request headers to pass through the
-proxy.  These default to the reverse proxy forwarding headers:
+This is a hash reference (since v0.2.0) of request headers to pass
+through the proxy.  The keys are the request header fieldss, and the
+values are the headers that will be passed to the L</rewrite> URL.
+
+Values of C<1> will be a synonym for the same header, and false values
+will mean that the header is skipped.
+
+An array reference can be used to simply pass through a list of
+headers unchanged.
+
+It will default to the following headers:
 
 =over
 
@@ -122,8 +131,17 @@ The C<User-Agent> is forwarded as C<X-Forwarded-User-Agent>.
 
 =attr response
 
-This is an array reference of response headers to pass from the
-result.  It defaults to the following headers:
+This is a hash reference (since v0.2.0) of request headers to return
+from the proxy.  The keys are the response header fields, and the
+values are the headers that will be returned from the proxy.
+
+Values of C<1> will be a synonym for the same header, and false values
+will mean that the header is skipped.
+
+An array reference can be used to simply pass through a list of
+headers unchanged.
+
+It will default to the following headers:
 
 =over
 
@@ -165,27 +183,37 @@ sub prepare_app {
 
     unless ($self->request) {
         $self->request(
-            [
-             qw/
-             X-Forwarded-For
-             X-Forwarded-Host
-             X-Forwarded-Port
-             X-Forwarded-Proto
-             /
-            ]
+            {
+                'User-Agent' => 'X-Forwarded-User-Agent',
+                ( map { $_ => $_ } qw/
+                  X-Forwarded-For
+                  X-Forwarded-Host
+                  X-Forwarded-Port
+                  X-Forwarded-Proto
+                  /
+                ),
+            }
         );
     }
+    if (is_plain_arrayref($self->request)) {
+        $self->request( { map { $_ => $_ } @{ $self->request } } );
+    }
+
 
     unless ($self->response) {
         $self->response(
-            [
-             qw/
-             Content-Type
-             Expires
-             Last-Modified
-             /
-            ]
+            {
+                ( map { $_ => $_ } qw/
+                  Content-Type
+                  Expires
+                  Last-Modified
+                  /
+                ),
+            }
         );
+    }
+    if (is_plain_arrayref($self->response)) {
+        $self->response( { map { $_ => $_ } @{ $self->response } } );
     }
 
     unless ($self->max_age) {
@@ -226,12 +254,11 @@ sub call {
         $mech->reset_headers;
 
         my $req_head = $req->headers;
-        for my $field (@{ $self->request }) {
+        for my $field (keys %{ $self->request }) {
             my $value = $req_head->header($field) // next;
-            $mech->add_header( $field => $value );
-        }
-        if (my $ua = $req_head->header('User-Agent')) {
-            $mech->add_header( 'X-Forwarded-User-Agent' => $ua );
+            my $send = $self->request->{$field} or next;
+            $send = $field if $send eq "1";
+            $mech->add_header( $send => $value );
         }
 
         my $res  = $mech->get( $url );
@@ -246,10 +273,12 @@ sub call {
 
         my $head = $res->headers;
         my $h = Plack::Util::headers([ 'X-Renderer' => __PACKAGE__ ]);
-        for my $field (@{ $self->response }) {
+        for my $field (keys %{ $self->response }) {
             my $value = $head->header($field) // next;
             $value =~ tr/\n/ /;
-            $h->set( $field => $value );
+            my $send = $self->response->{$field} or next;
+            $send = $field if $send eq "1";
+            $h->set( $send => $value );
         }
 
         if ($res->code == HTTP_OK) {

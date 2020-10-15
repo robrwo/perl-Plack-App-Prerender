@@ -90,8 +90,17 @@ used instead.
 
 ## request
 
-This is an array reference of request headers to pass through the
-proxy.  These default to the reverse proxy forwarding headers:
+This is a hash reference (since v1.3) of request headers to pass
+through the proxy.  The keys are the request header fieldss, and the
+values are the headers that will be passed to the ["rewrite"](#rewrite) URL.
+
+Values of `1` will be a synonym for the same header, and false values
+will mean that the header is skipped.
+
+An array reference can be used to simply pass through a list of
+headers unchanged.
+
+It will default to the following headers:
 
 - `X-Forwarded-For`
 - `X-Forwarded-Host`
@@ -102,8 +111,17 @@ The `User-Agent` is forwarded as `X-Forwarded-User-Agent`.
 
 ## response
 
-This is an array reference of response headers to pass from the
-result.  It defaults to the following headers:
+This is a hash reference (since v1.3) of request headers to return
+from the proxy.  The keys are the response header fields, and the
+values are the headers that will be returned from the proxy.
+
+Values of `1` will be a synonym for the same header, and false values
+will mean that the header is skipped.
+
+An array reference can be used to simply pass through a list of
+headers unchanged.
+
+It will default to the following headers:
 
 - `Content-Type`
 - `Expires`
