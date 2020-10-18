@@ -19,15 +19,19 @@ use Plack::App::Prerender;
 
 Log::Log4perl->easy_init($ERROR);
 
-my $mech = WWW::Mechanize::Chrome->new(
-    headless         => 1,
-    separate_session => 1,
-);
+my $mech = eval {
+    WWW::Mechanize::Chrome->new(
+        headless         => 1,
+        separate_session => 1,
+    );
+};
+
+skip_all("Cannot start chrome browser") unless $mech;
 
 $SIG{INT} = sub {
     $mech->close;
     exit 1;
-};
+} if $mech;
 
 my $cache = CHI->new( driver => 'Memory', global => 1 );
 
