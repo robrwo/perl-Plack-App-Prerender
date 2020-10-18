@@ -6,7 +6,7 @@ use v5.10.1;
 use strict;
 use warnings;
 
-our $VERSION = 'v0.2.0';
+our $VERSION = 'v0.2.1';
 
 use parent qw/ Plack::Component /;
 

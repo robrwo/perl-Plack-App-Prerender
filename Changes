@@ -1,6 +1,8 @@
 Revision history for {{ $dist->name }}:
 
 {{$NEXT}}
+
+v0.2.0    2020-10-18 12:13:43+01:00 Europe/London
   [Enhancements]
   - The request and response attributes can take a hash reference
     of headers to forward.
