@@ -82,6 +82,8 @@ sub validator {
 
 This is the cache handling interface. See [CHI](https://metacpan.org/pod/CHI).
 
+If no cache is specified (v0.2.0), then the result will not be cached.
+
 ## max\_age
 
 This is the maximum time (in seconds) to cache content.  If the page
@@ -90,7 +92,7 @@ used instead.
 
 ## request
 
-This is a hash reference (since v1.3) of request headers to pass
+This is a hash reference (since v0.2.0) of request headers to pass
 through the proxy.  The keys are the request header fieldss, and the
 values are the headers that will be passed to the ["rewrite"](#rewrite) URL.
 
@@ -111,7 +113,7 @@ The `User-Agent` is forwarded as `X-Forwarded-User-Agent`.
 
 ## response
 
-This is a hash reference (since v1.3) of request headers to return
+This is a hash reference (since v0.2.0) of request headers to return
 from the proxy.  The keys are the response header fields, and the
 values are the headers that will be returned from the proxy.
 
