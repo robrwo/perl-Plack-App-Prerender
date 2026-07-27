@@ -173,6 +173,14 @@ This only does the bare minimum necessary for proxying requests. You
 may need additional middleware for reverse proxies, logging, or
 security filtering.
 
+=head1 SECURITY CONSIDERATIONS
+
+By default, Chrome can access local files using the C<file:> protocol.
+
+By default, Chrome will run scripts.
+
+This should only be used for trusted websites, e.g. adding a prerendering proxy for your own website.
+
 =cut
 
 sub prepare_app {

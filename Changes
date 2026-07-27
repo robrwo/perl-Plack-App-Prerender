@@ -9,6 +9,8 @@ Revision history for {{ $dist->name }}:
 
   - Update copyright year.
 
+  - Added a SECURITY CONSIDERATIONS section.
+
   [Tests]
   - Tests changed to use example.com as httpbin.org is not responding.
 
