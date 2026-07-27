@@ -4,6 +4,9 @@ Revision history for {{ $dist->name }}:
   [Security]
   - Requests with no forward slash are now blocked, as these may allow the host to be changed (CVE-2026-17552).
 
+  [Documentation]
+  - Updated AUTHOR email address.
+
   [Tests]
   - Tests changed to use example.com as httpbin.org is not responding.
 
