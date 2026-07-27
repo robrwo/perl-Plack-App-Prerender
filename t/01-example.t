@@ -37,7 +37,7 @@ my $cache = CHI->new( driver => 'Memory', global => 1 );
 
 my $handler = Plack::App::Prerender->new(
     mech    => $mech,
-    rewrite => 'https://httpbin.org',
+    rewrite => 'https://example.com',
     cache   => $cache,
     wait    => 5,
 );
@@ -52,7 +52,7 @@ test_psgi
 
         is $res->code, HTTP_OK, join( " ", $req->method, $req->uri );
 
-        like $res->content, qr/react-text/, 'has dynamic text';
+        like $res->content, qr/This domain is for use in documentation examples/, 'has text';
 
 };
 
