@@ -91,6 +91,12 @@ This can be used for simple request validation.  For example,
     ...
   }
 
+If L</rewrite> is a URL prefix string, then the path must start with a forward slash, otherwise it will return an HTTP 400.
+This is to prevent security issues where the hostname is changed and the prerendering proxy is abused
+
+If L</rewrite> is a code reference, then any path will be accepted,
+but it is assumed that the  the developer will check for  requests without a forward slash and handle them appropriately.
+
 =attr cache
 
 This is the cache handling interface. See L<CHI>.
@@ -239,6 +245,10 @@ sub call {
     my $url  = is_coderef($base)
         ? $base->($path_query, $env)
         : $base . $path_query;
+
+    unless ( is_coderef($base) || substr($path_query, 0, 1) eq '/' ) {
+        $url = undef;
+    }
 
     $url //= [ HTTP_BAD_REQUEST, [], [] ];
     return $url if (is_plain_arrayref($url));
