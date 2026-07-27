@@ -25,6 +25,12 @@ use WWW::Mechanize::Chrome;
 # RECOMMEND PREREQ: Log::Log4perl
 # RECOMMEND PREREQ: Ref::Util::XS
 
+=begin :prelude
+
+=for stopwords Rendertron mech prerendering proxying
+
+=end :prelude
+
 =head1 SYNOPSIS
 
   use CHI;
@@ -47,7 +53,7 @@ use WWW::Mechanize::Chrome;
 =head1 DESCRIPTION
 
 This is a PSGI application that acts as a simple prerendering proxy
-for websites using Chrone.
+for websites using Chrome.
 
 This only supports GET requests, as this is intended as a proxy for
 search engines that do not support AJAX-generated content.
@@ -57,7 +63,7 @@ search engines that do not support AJAX-generated content.
 A L<WWW::Mechanize::Chrome> object. If omitted, a headless instance of
 Chrome will be launched.
 
-If you want to specify alternative options, you chould create your own
+If you want to specify alternative options, you could create your own
 instance of WWW::Mechanize::Chrome and pass it to the constructor.
 
 =attr rewrite
@@ -112,7 +118,7 @@ used instead.
 =attr request
 
 This is a hash reference (since v0.2.0) of request headers to pass
-through the proxy.  The keys are the request header fieldss, and the
+through the proxy.  The keys are the request header fields, and the
 values are the headers that will be passed to the L</rewrite> URL.
 
 Values of C<1> will be a synonym for the same header, and false values
@@ -328,6 +334,19 @@ sub call {
     }
 
 }
+
+=head1 prepend:SUPPORT
+
+Only the latest version of this module will be supported.
+
+Future releases may only support Perl versions released in the last ten (10) years.
+
+=head1 append:SUPPORT
+
+=head2 Reporting Security Vulnerabilities
+
+If the bug you are reporting has security implications which make it inappropriate to send to a public issue tracker,
+then see F<SECURITY.md> for instructions how to report security vulnerabilities.
 
 =head1 SEE ALSO
 
