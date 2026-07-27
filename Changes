@@ -7,6 +7,8 @@ Revision history for {{ $dist->name }}:
   [Documentation]
   - Updated AUTHOR email address.
 
+  - Update copyright year.
+
   [Tests]
   - Tests changed to use example.com as httpbin.org is not responding.
 
